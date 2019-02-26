@@ -59,26 +59,52 @@ function formatBytes(bytes) {
     else return(bytes / 1073741824).toFixed(3) + " GB"
 };
 
-//app.get('/info/:videoid', cors(corsOptions), async (req, res) => {
-app.get('/info/:videoid', async (req, res) => {
+function comparetitle(a, b) {
+	const aa = a.title.toUpperCase();
+	const bb = b.title.toUpperCase();
+	let comparison = 0;
+	if (aa > bb) comparison = 1;
+	else if (aa < bb) comparison = -1;
+	return comparison;
+	}
 
-	ytdl.getBasicInfo(req.params.videoid, 
-		(err, info) => {
 
-			res.setHeader('Content-Type', 'application/json');
-			res.send(JSON.stringify({
-				title: info.title,
-				thumbnail_url: info.thumbnail_url,
-				length_seconds: info.length_seconds
-			}))
-		})
+app.get('/content', async (req, res) => {
+  	res.setHeader('Content-Type', 'application/json')
+	res.send(JSON.stringify(db.get('content')))
 
 })
 
-app.get('/content', async (req, res) => {
+app.get('/content/sort/by/tag', async (req, res) => {
+
+	var curr_tag = null
+	var curr_idx = -1
+
+	var ret = []
+	var data = db.get('content').sortBy('tag').value()
+
+
+	data.map((item) => {
+
+		if(curr_tag!==item.tag) {
+			ret.push({ tag: item.tag, content:[] })
+			curr_idx = curr_idx + 1
+			curr_tag = item.tag
+		}
+		ret[curr_idx].content.push(item)
+
+	})
+
+	ret = ret.map((item) => {  
+		return {
+			tag: item.tag,
+			content: item.content.sort(comparetitle)
+		}
+	})
+	console.log(ret)
 
   	res.setHeader('Content-Type', 'application/json')
-	res.send(JSON.stringify(db.get('content')))
+	res.send(JSON.stringify(ret))
 
 })
 
@@ -124,9 +150,10 @@ app.get('/tasks', async (req, res) => {
 app.post('/download', async (req, res) => {
 
 	if(!ytdl.validateURL(req.body.url)) {
-		res.setHeader('Content-Type', 'application/json')
-		res.send(JSON.stringify({err:'Invalid URL'}))
 		console.log('ERR | Invalid URL')
+
+		res.setHeader('Content-Type', 'application/json')
+		res.send(JSON.stringify(tasks))
 		return
 	}
 
@@ -134,9 +161,10 @@ app.post('/download', async (req, res) => {
 	ytdl.getInfo(videoid, (err, info) => {
 		
 		if (err) {
+			console.log('ERR | ',err)
+
 			res.setHeader('Content-Type', 'application/json')
-			res.send(JSON.stringify({err:'Video unavailable'}))
-			console.log('ERR | Video unavailable')
+			res.send(JSON.stringify(tasks))
 			return
 		}
 
