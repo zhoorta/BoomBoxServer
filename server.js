@@ -69,13 +69,7 @@ function comparetitle(a, b) {
 	}
 
 
-app.get('/content', async (req, res) => {
-  	res.setHeader('Content-Type', 'application/json')
-	res.send(JSON.stringify(db.get('content')))
-
-})
-
-app.get('/content/sort/by/tag', async (req, res) => {
+returnContentByTag = () => {
 
 	var curr_tag = null
 	var curr_idx = -1
@@ -101,10 +95,21 @@ app.get('/content/sort/by/tag', async (req, res) => {
 			content: item.content.sort(comparetitle)
 		}
 	})
-	console.log(ret)
+
+	return ret
+}
+
+
+app.get('/content', async (req, res) => {
+  	res.setHeader('Content-Type', 'application/json')
+	res.send(JSON.stringify(db.get('content')))
+
+})
+
+app.get('/content/sort/by/tag', async (req, res) => {
 
   	res.setHeader('Content-Type', 'application/json')
-	res.send(JSON.stringify(ret))
+	res.send(JSON.stringify(returnContentByTag()))
 
 })
 
@@ -124,7 +129,7 @@ app.post('/content/update', async (req, res) => {
 		.write()
 
 	res.setHeader('Content-Type', 'application/json')
-	res.send(JSON.stringify(db.get('content')))
+	res.send(JSON.stringify(returnContentByTag()))
 
 })
 
@@ -133,10 +138,10 @@ app.get('/content/:id/delete', async (req, res) => {
 	var file='./content/' + req.params.id + '.ogg'
 
 	fs.unlink(file, (err) => { console.log('File deleted : ' + file) })
-	db.get('content').remove({ id: req.params.id }).write()
+	await db.get('content').remove({ id: req.params.id }).write()
 
 	res.setHeader('Content-Type', 'application/json')
-	res.send(JSON.stringify(db.get('content')))
+	res.send(JSON.stringify(returnContentByTag()))
 
 })
 
