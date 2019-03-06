@@ -38,7 +38,6 @@ module.exports = class AuthController {
    	{
    		try {
             var decoded = jwt.verify(token, this.server_key)
-            console.log('decodeToken | ',{auth: true,uid: decoded.id})
             return { auth: true, uid: decoded.id, iat: decoded.iat, exp: decoded.exp}
          } 
          catch(err) {

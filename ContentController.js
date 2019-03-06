@@ -70,7 +70,7 @@ module.exports = class ContentController {
 
 		var file='./content/' + id + '.ogg'
 
-		fs.unlink(file, (err) => { this.log('File deleted : ' + file) })
+		fs.unlink(file, (err) => { console.log('File deleted : ' + file) })
 		await this.db.get('content').remove({ id: id, owner: keyid }).write()
 
 		console.log('content #' + id + ' | deleted')
@@ -82,7 +82,7 @@ module.exports = class ContentController {
 	async createDownloadTask(keyid,url) {
 
 		if(!ytdl.validateURL(url)) {
-			this.log('ERR | Invalid URL')
+			console.log('ERR | Invalid URL')
 			return false
 		}
 
@@ -133,7 +133,6 @@ module.exports = class ContentController {
 			else return false
 		})
 
-		//this.log('task | did not wait()')
 	}
 
 	async startDownloadTask(info,task) {
