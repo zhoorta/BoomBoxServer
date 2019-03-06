@@ -1,6 +1,7 @@
 const ytdl = require('ytdl-core')
 
 const uniqid = require('uniqid')
+const sha256 = require('js-sha256')
 const fs = require('fs')
 
 
@@ -59,7 +60,7 @@ module.exports = class ContentController {
 			.set('tag', content.tag)
 			.write()
 
-		this.log('content #' + content.id + ' | updated')
+		console.log('content #' + content.id + ' | updated')
 
 		return true
 
@@ -72,7 +73,7 @@ module.exports = class ContentController {
 		fs.unlink(file, (err) => { this.log('File deleted : ' + file) })
 		await this.db.get('content').remove({ id: id, owner: keyid }).write()
 
-		this.log('content #' + id + ' | deleted')
+		console.log('content #' + id + ' | deleted')
 
 		return true
 
@@ -85,20 +86,20 @@ module.exports = class ContentController {
 			return false
 		}
 
-		this.log('task | getURLVideoID()')
+		console.log('task | getURLVideoID()')
 
 		var videoid = await ytdl.getURLVideoID(url)
 
-		this.log('task | getInfo()')
+		console.log('task | getInfo()')
 
 		ytdl.getInfo(videoid, (err, info) => {
 
 			if (err) {
-				this.log('ERR | getInfo()')
+				console.log('ERR | getInfo()')
 				return false
 			}
 
-			this.log('task | chooseFormat()')
+			console.log('task | chooseFormat()')
 
 
 			let format = ytdl.chooseFormat(info.formats, { quality: 'highestaudio', filter: 'audioonly' })
@@ -107,7 +108,7 @@ module.exports = class ContentController {
 				//TODO: validar se ja existe tarefa para esse videoid
 
 				var task = {
-					id: uniqid(),
+					id: sha256(uniqid()),
 					owner: keyid,
 					videoid: videoid,
 					title: info.title,
@@ -121,7 +122,8 @@ module.exports = class ContentController {
 				}
 
 				this.tasks.push(task)
-				this.log('task | created')
+				console.log('task | created')
+				console.log('tasks | ', this.tasks)
 
 				this.startDownloadTask(info,task)
 
@@ -131,12 +133,12 @@ module.exports = class ContentController {
 			else return false
 		})
 
-		this.log('task | did not wait()')
+		//this.log('task | did not wait()')
 	}
 
 	async startDownloadTask(info,task) {
 		
-		this.log('task | startDownloadTask')
+		console.log('task | startDownloadTask')
 
 
 		ytdl.downloadFromInfo(info, { quality: 'highestaudio', filter: 'audioonly' })
@@ -155,7 +157,7 @@ module.exports = class ContentController {
 					this.db.get('content').push(this.tasks[task_idx]).write() 
 					this.tasks.splice(task_idx,1)
 
-					this.log('task #' + task_idx + ' | finished')
+					console.log('task #' + task_idx + ' | finished')
 					}			
 
 	      	})
@@ -191,10 +193,6 @@ module.exports = class ContentController {
 		if (aa > bb) comparison = 1;
 		else if (aa < bb) comparison = -1;
 		return comparison;
-	}
-
-	log(info) {
-		console.log(info)
 	}
 
 }

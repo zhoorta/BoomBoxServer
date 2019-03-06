@@ -89,15 +89,10 @@ app.get('/tasks', verifyToken, async (req, res) => {
 
 app.post('/download', verifyToken, async (req, res) => {
 
-	//await contentController.createYTDownloadTask(req.body.url)
-	console.log('getting tasks')
-	console.log('validating task', req.body.url)
-	
 	await contentController.createDownloadTask(req.uid,req.body.url)
 
 	res.setHeader('Content-Type', 'application/json')
 	res.send(JSON.stringify(contentController.getTasks(req.uid)))
-	
 	
 })
 

@@ -1,6 +1,7 @@
 var jwt = require('jsonwebtoken');
 //var config = require('../config');
 const uniqid = require('uniqid')
+const sha256 = require('js-sha256')
 
 module.exports = class AuthController {
 	
@@ -14,9 +15,9 @@ module.exports = class AuthController {
    	generateKeys()
    	{
    		return [
-   			{ id: uniqid(), secret: '1KV94mJAU3X5cdX4bUMuaNR2gXV6kDH7SB', name: 'jmhmmm' },
-   			{ id: uniqid(), secret: '16TmJDenuD1pw3LSMdkrxeBsXihYNcVEu4', name: 'jipf' },
-   			{ id: uniqid(), secret: '1959SpEqWaxgqFnm9vCYdtuKWUbvVGPKdn', name: 'shmm' },
+   			{ id: sha256(uniqid()), secret: sha256(uniqid()), name: 'jmhmmm' },
+   			{ id: sha256(uniqid()), secret: sha256(uniqid()), name: 'jipf' },
+   			{ id: sha256(uniqid()), secret: sha256(uniqid()), name: 'shmm' },
    		]
    	}
 
@@ -37,6 +38,7 @@ module.exports = class AuthController {
    	{
    		try {
             var decoded = jwt.verify(token, this.server_key)
+            console.log('decodeToken | ',{auth: true,uid: decoded.id})
             return { auth: true, uid: decoded.id, iat: decoded.iat, exp: decoded.exp}
          } 
          catch(err) {
