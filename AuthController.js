@@ -7,7 +7,8 @@ module.exports = class AuthController {
 	
 	constructor(db) {
 		this.db =  db
-		this.server_key = 'L4CL4YSSpfML8G8Vb2V1u73E8pQeWdkkANR5xmq77gUT6BaUaGhe'
+      //this.server_key = 'L4CL4YSSpfML8G8Vb2V1u73E8pQeWdkkANR5xmq77gUT6BaUaGhe'
+		this.server_key = sha256(uniqid())
 		db.defaults({ keys: this.generateKeys() }).write()
    	}
 
