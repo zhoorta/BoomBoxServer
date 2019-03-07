@@ -21,6 +21,10 @@ module.exports = class ContentController {
    		return this.db.get('content').filter({ owner: keyid }).value()
    	}
 
+   	getAllContent() {
+   		return this.db.get('content').value()
+   	}
+
 
 	getContentByTag(keyid) {
 
