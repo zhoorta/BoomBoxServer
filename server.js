@@ -20,9 +20,17 @@ var Auth = new AuthController(db)
 
 function verifyToken(req, res, next) {
 	var token = req.headers['x-access-token']
-	if (!token) return res.json({success: false,message: 'Auth token is not supplied'})
+	if (!token) {
+		var ret = {success: false,message: 'Auth token is not supplied'}
+		console.log(ret)
+		return res.json(ret)
+	}
 	let decoded = Auth.decodeToken(token)
-	if(decoded.auth==='false') return res.json({success: false, message: 'Token is not valid'})
+	if(decoded.auth==='false') {
+		var ret = {success: false, message: 'Token is not valid'}
+		console.log(ret)
+		return res.json(ret)
+	}
 	req.uid = decoded.uid
 	next()
 }
@@ -35,10 +43,9 @@ app.use(function (req, res, next) {
 })
 
 app.post('/auth/', async (req, res) => {
-
 	var result = await Auth.authenticate(req.body.secret)
+	console.log('auth |', result)
 	res.send(JSON.stringify(result))
-	
 })
 
 app.get('/content', verifyToken, async (req, res) => {
@@ -103,6 +110,16 @@ app.post('/download', verifyToken, async (req, res) => {
 
 	res.setHeader('Content-Type', 'application/json')
 	res.send(JSON.stringify(contentController.getTasks(req.uid)))
+	
+})
+
+
+app.post('/download/info', verifyToken, async (req, res) => {
+
+	const info = await contentController.getDownloadInfo(req.body.url)
+	console.log('download info | ',info)
+	res.setHeader('Content-Type', 'application/json')
+	res.send(JSON.stringify(info))
 	
 })
 

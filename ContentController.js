@@ -87,6 +87,17 @@ module.exports = class ContentController {
 
 	}
 
+	async getDownloadInfo(url) {
+		if(!ytdl.validateURL(url)) return { err: 'Invalid URL'}
+
+		const info = await ytdl.getBasicInfo(url)
+		return {
+			title: info.title,
+			thumbnail_url: info.thumbnail_url,
+			length_hours: this.formatContentLength(info.length_seconds),
+		}
+	}
+
 	async createDownloadTask(keyid,url) {
 
 		if(!ytdl.validateURL(url)) {
