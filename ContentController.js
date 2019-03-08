@@ -98,7 +98,7 @@ module.exports = class ContentController {
 				length_hours: this.formatContentLength(info.length_seconds),
 			}
 		} catch(err) {
-			return { err: err}
+			return { err: 'This video is unavailable'}
 		}
 	}
 
