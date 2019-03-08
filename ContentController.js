@@ -21,6 +21,10 @@ module.exports = class ContentController {
    		return this.db.get('content').filter({ owner: keyid }).value()
    	}
 
+   	getOtherContent(keyid) {
+   		return this.db.get('content').filter(obj => obj.owner !== keyid).value()
+   	}
+
    	getAllContent() {
    		return this.db.get('content').value()
    	}

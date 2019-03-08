@@ -51,6 +51,11 @@ app.get('/content/all', verifyToken, async (req, res) => {
 	res.send(JSON.stringify(contentController.getAllContent()))
 })
 
+app.get('/content/other', verifyToken, async (req, res) => {
+  	res.setHeader('Content-Type', 'application/json')
+	res.send(JSON.stringify(contentController.getOtherContent(req.uid)))
+})
+
 app.get('/content/sort/by/tag', verifyToken, async (req, res) => {
 
   	res.setHeader('Content-Type', 'application/json')
