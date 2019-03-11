@@ -30,7 +30,7 @@ module.exports = class AuthController {
    			var token = jwt.sign({ id: key.id }, this.server_key, {
 		      expiresIn: 86400 // expires in 24 hours
 		    });
-   			return { auth: true, token: token }
+   			return { uid: key.id, auth: true, token: token }
    		}
    		return { auth: false, token: null, message: 'Authentication failed.' }
    	}

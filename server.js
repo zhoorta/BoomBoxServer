@@ -52,9 +52,12 @@ app.post('/auth/', async (req, res) => {
 	sendJsonResponse(res,result)
 })
 
-
 app.get('/users', verifyToken, async (req, res) => {
 	sendJsonResponse(res,contentController.getUsers(req.uid))
+})
+
+app.get('/tasks', verifyToken, async (req, res) => {
+	sendJsonResponse(res,contentController.getTasks(req.uid))
 })
 
 app.get('/content', verifyToken, async (req, res) => {
@@ -78,7 +81,6 @@ app.get('/content/download/:id', async (req, res) => {
 	res.download('./content/' + req.params.id + '.ogg')
 })
 
-
 app.post('/content/update', verifyToken, async (req, res) => {
 	await contentController.updateContent(req.uid,req.body.content)
 	sendJsonResponse(res,contentController.getContentByTag(req.uid))
@@ -87,10 +89,6 @@ app.post('/content/update', verifyToken, async (req, res) => {
 app.get('/content/:id/delete', verifyToken, async (req, res) => {
 	await contentController.deleteContent(req.uid,req.params.id)
 	sendJsonResponse(res,contentController.getContentByTag(req.uid))
-})
-
-app.get('/tasks', verifyToken, async (req, res) => {
-	sendJsonResponse(res,contentController.getTasks(req.uid))
 })
 
 app.post('/download', verifyToken, async (req, res) => {
