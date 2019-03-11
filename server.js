@@ -1,4 +1,5 @@
 const express = require('express')
+const http = require('http')
 const https = require('https')
 const app = express()
 const fs = require('fs')
@@ -112,9 +113,10 @@ const serverOptions = {
     requestCert: false,
     rejectUnauthorized: false
 }
-const port = process.env.PORT || 1973;
-const server = https.createServer( serverOptions, app )
 
-server.listen(port, function () {
-    console.log('BoomBox Server listening on port ' + server.address().port)
-})
+const httpServer = http.createServer(app)
+const httpsServer = https.createServer(serverOptions, app)
+
+
+httpServer.listen(1973, () => console.log('BoomBox Server : http port 1973'))
+httpsServer.listen(1974, () => console.log('BoomBox Server : https port 1974'))
