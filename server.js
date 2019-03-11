@@ -105,26 +105,16 @@ app.post('/download/info', verifyToken, async (req, res) => {
 })
 
 
-https.createServer({ key: fs.readFileSync('./ssl/server.key'), cert: fs.readFileSync('./ssl/server.crt')}, app)
-	.listen(1973, function () {
-		console.log(`
-     ( )
-      H
-      H
-     _H_ 
-  .-'-.-'-.
- /         
-|           |
-|   .-------'._
-|  / /  '.' '. 
-|  \ \  @   @ / / 
-|   '---------'        
-|    _______|  
-|  .'-+-+-+|  
-|  '.-+-+-+|         BoomBox Server Running
-|    """""" |        https://localhost:1973
-'-.__   __.-'
-     """
-    `)
-})
 
+const serverOptions = {
+    key: fs.readFileSync( './ssl/server.key' ),
+    cert: fs.readFileSync( './ssl/server.crt' ),
+    requestCert: false,
+    rejectUnauthorized: false
+}
+const port = process.env.PORT || 1973;
+const server = https.createServer( serverOptions, app )
+
+server.listen(port, function () {
+    console.log('BoomBox Server listening on port ' + server.address().port)
+})
