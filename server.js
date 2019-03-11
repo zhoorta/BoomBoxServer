@@ -1,11 +1,13 @@
 const express = require('express')
+const https = require('https')
 const app = express()
-const port = process.env.PORT || 1973
+const fs = require('fs')
+
 
 const ContentController = require('./ContentController.js')
 const AuthController = require('./AuthController.js')
 
-var bodyParser = require('body-parser');
+const bodyParser = require('body-parser');
 app.use(bodyParser.json())
 app.use(bodyParser.urlencoded({ extended: true }))
 
@@ -13,8 +15,8 @@ app.use(bodyParser.urlencoded({ extended: true }))
 const low = require('lowdb')
 const FileSync = require('lowdb/adapters/FileSync')
 const db = low(new FileSync('./db.json'))
-var contentController = new ContentController(db)
-var Auth = new AuthController(db)
+const contentController = new ContentController(db)
+const Auth = new AuthController(db)
 
 
 
@@ -103,4 +105,26 @@ app.post('/download/info', verifyToken, async (req, res) => {
 })
 
 
-app.listen(port, () => console.log('BoomBox Server port: ' + port))
+https.createServer({ key: fs.readFileSync('./ssl/server.key'), cert: fs.readFileSync('./ssl/server.crt')}, app)
+	.listen(1973, function () {
+		console.log(`
+     ( )
+      H
+      H
+     _H_ 
+  .-'-.-'-.
+ /         
+|           |
+|   .-------'._
+|  / /  '.' '. 
+|  \ \  @   @ / / 
+|   '---------'        
+|    _______|  
+|  .'-+-+-+|  
+|  '.-+-+-+|         BoomBox Server Running
+|    """""" |        https://localhost:1973
+'-.__   __.-'
+     """
+    `)
+})
+
