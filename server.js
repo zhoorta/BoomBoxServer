@@ -19,8 +19,6 @@ const db = low(new FileSync('./db.json'))
 const contentController = new ContentController(db)
 const Auth = new AuthController(db)
 
-
-
 function verifyToken(req, res, next) {
 	var token = req.headers['x-access-token']
 	if (!token) {
@@ -51,9 +49,6 @@ app.use(function (req, res, next) {
 })
 
 
-app.get('/.well-known/pki-validation/C623E3FC73B4CBB9F400324E4BF5AE38.txt', async (req, res) => {
-	res.download('./C623E3FC73B4CBB9F400324E4BF5AE38.txt')
-})
 
 app.post('/auth/', async (req, res) => {
 	var result = await Auth.authenticate(req.body.secret)
@@ -125,3 +120,13 @@ const httpsServer = https.createServer(serverOptions, app)
 
 httpServer.listen(1973, () => console.log('BoomBox Server : http port 1973'))
 httpsServer.listen(1974, () => console.log('BoomBox Server : https port 1974'))
+
+
+
+const tmpapp = express()
+
+tmpapp.get('/.well-known/pki-validation/C623E3FC73B4CBB9F400324E4BF5AE38.txt', async (req, res) => {
+	res.download('./C623E3FC73B4CBB9F400324E4BF5AE38.txt')
+})
+const tmpServer = http.createServer(tmpapp)
+tmpServer.listen(80, () => console.log('BoomBox Domain Validation : port 80'))
