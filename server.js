@@ -50,6 +50,11 @@ app.use(function (req, res, next) {
     next();
 })
 
+
+app.get('/.well-known/pki-validation/C623E3FC73B4CBB9F400324E4BF5AE38.txt', async (req, res) => {
+	res.download('./C623E3FC73B4CBB9F400324E4BF5AE38.txt')
+})
+
 app.post('/auth/', async (req, res) => {
 	var result = await Auth.authenticate(req.body.secret)
 	sendJsonResponse(res,result)
