@@ -108,10 +108,9 @@ app.post('/download/info', verifyToken, async (req, res) => {
 
 
 const serverOptions = {
-    key: fs.readFileSync( './ssl/server.key' ),
-    cert: fs.readFileSync( './ssl/server.crt' ),
-    requestCert: false,
-    rejectUnauthorized: false
+    ca: fs.readFileSync('./ssl/jambox.xyz.ca-bundle'),
+    key: fs.readFileSync('./ssl/jambox_xyz_key.txt'),
+    cert: fs.readFileSync('./ssl/jambox.xyz.crt')
 }
 
 const httpServer = http.createServer(app)
@@ -122,11 +121,3 @@ httpServer.listen(1973, () => console.log('BoomBox Server : http port 1973'))
 httpsServer.listen(1974, () => console.log('BoomBox Server : https port 1974'))
 
 
-
-const tmpapp = express()
-
-tmpapp.get('/.well-known/pki-validation/C623E3FC73B4CBB9F400324E4BF5AE38.txt', async (req, res) => {
-	res.download('./C623E3FC73B4CBB9F400324E4BF5AE38.txt')
-})
-const tmpServer = http.createServer(tmpapp)
-tmpServer.listen(80, () => console.log('BoomBox Domain Validation : port 80'))
