@@ -17,6 +17,10 @@ module.exports = class ContentController {
    		return this.tasks.filter(obj => obj.owner === keyid)
    	}
 
+   	getUsers() {
+   		return this.db.get('keys').map(obj => obj={id: obj.id, name: obj.name})
+   	}
+
    	getContent(keyid) {
    		return this.db.get('content').filter({ owner: keyid }).value()
    	}
