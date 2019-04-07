@@ -113,11 +113,11 @@ const serverOptions = {
     cert: fs.readFileSync('./ssl/jambox.xyz.crt')
 }
 
-const httpServer = http.createServer(app)
+//const httpServer = http.createServer(app)
 const httpsServer = https.createServer(serverOptions, app)
 
 
-httpServer.listen(1973, () => console.log('BoomBox Server : http port 1973'))
+//httpServer.listen(1973, () => console.log('BoomBox Server : http port 1973'))
 httpsServer.listen(1974, () => console.log('BoomBox Server : https port 1974'))
 
 
