@@ -106,6 +106,10 @@ app.post('/download/info', verifyToken, async (req, res) => {
 })
 
 
+app.get('/app/release', async (req, res) => {
+	//res.setHeader('Content-Type', 'audio/ogg')
+	res.download('./app/boombox.apk')
+})
 
 const serverOptions = {
     ca: fs.readFileSync('./ssl/jambox.xyz.ca-bundle'),
